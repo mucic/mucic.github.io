@@ -3,325 +3,228 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Driver Waiting Checker</title>
+  <!-- Materialize CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      margin: 0;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
+      background-color: #f5f5f5;
     }
 
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      max-width: 100%;
+    .card {
+      border-radius: 12px;
     }
 
-    th,
-    td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: center;
+    .table-container {
+      overflow-x: auto;
     }
 
-    th {
-      text-align: left;
-    }
-
-    th {
-      background-color: #f2f2f2;
-    }
-
-    tbody tr:nth-child(odd) {
+    table.striped>tbody>tr:nth-child(odd) {
       background-color: #fafafa;
     }
 
-    input[type="text"] {
-      width: 100%;
-      min-width: 100px;
-      padding: 4px;
-    }
-
-    input[type="time"] {
-      padding: 4px;
-    }
-
-    select {
-      padding: 4px;
-      width: 100%;
-    }
-
-    button {
-      padding: 15px;
-      margin: 5px 5px 0 0;
-      border: none;
-      background-color: #007BFF;
-      color: white;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    button.remove {
-      background-color: #dc3545;
-      padding: 6px 10px;
-    }
-
-    button.remove:hover {
-      background-color: #c82333;
-    }
-
-    .result-panel {
-      border: 1px solid #ccc;
-      padding: 15px;
-      border-radius: 6px;
-      background-color: #f9f9f9;
-      flex: 1;
-      min-width: 400px;
-      max-width: 500px;
-      word-break: break-word;
-    }
-
-    .result-panel ul {
-      padding-left: 20px;
-    }
-
-    .result-panel li {
-      margin-bottom: 8px;
+    table.striped tr {
+      border-bottom: 1px dotted #2196F3;
     }
 
     .actions {
-      margin-top: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      margin-top: 1rem;
     }
 
-    .btn-check {
-      background-color: #28a745;
-      padding: 15px;
-      color: white;
-      margin-right: 0;
-    }
-
-    .btn-check:hover {
-      background-color: #218838;
-    }
-
-    @media (max-width: 800px) {
-      body {
-        flex-direction: column;
+    @media (max-width: 600px) {
+      .input-field {
+        margin-bottom: 0.5rem;
       }
 
-      .result-panel {
-        max-width: 100%;
+      .btn,
+      .btn-small {
         width: 100%;
-      }
-
-      td input[type="text"]:nth-child(3) {
-        width: 100%;
-      }
-
-      button {
-        width: auto;
+        margin-bottom: 0.5rem;
       }
     }
   </style>
-
 </head>
 
 <body>
+  <div class="container">
+    <h4 class="center-align grey-text text-darken-3">Driver Waiting Checker</h4>
 
-  <div>
-    <h3>Ride Plan</h3>
-    <table id="rideTable">
-      <thead>
-        <tr>
-          <th>Time</th>
-          <th>Action</th>
-          <th>Address pick-up/drop-off</th>
-          <th>Passenger</th>
-          <th>Remove</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><input type="time" value="14:00"></td>
-          <td>
-            <select>
-              <option value="Pickup">Pickup</option>
-              <option value="Dropoff">Dropoff</option>
-            </select>
-          </td>
-          <td><input type="text" value="Rua de Oliveira Monteiro 107"></td>
-          <td><input type="text" value="Martin"></td>
-          <td><button class="remove" onclick="removeRow(this)">X</button></td>
-        </tr>
-        <tr>
-          <td><input type="time" value="14:05"></td>
-          <td>
-            <select>
-              <option value="Pickup">Pickup</option>
-              <option value="Dropoff">Dropoff</option>
-            </select>
-          </td>
-          <td><input type="text" value="Rua de Oliveira Monteiro 200"></td>
-          <td><input type="text" value="Selena"></td>
-          <td><button class="remove" onclick="removeRow(this)">X</button></td>
-        </tr>
-        <tr>
-          <td><input type="time" value="14:35"></td>
-          <td>
-            <select>
-              <option value="Dropoff">Dropoff</option>
-              <option value="Pickup">Pickup</option>
-            </select>
-          </td>
-          <td><input type="text" value="R. de Alves Redol 292, 4050-042 Porto, Portugal"></td>
-          <td><input type="text" value="Martin"></td>
-          <td><button class="remove" onclick="removeRow(this)">X</button></td>
-        </tr>
-        <tr>
-          <td><input type="time" value="14:40"></td>
-          <td>
-            <select>
-              <option value="Dropoff">Dropoff</option>
-              <option value="Pickup">Pickup</option>
-            </select>
-          </td>
-          <td><input type="text" value="R. de Alves Redol 292, 4050-042 Porto, Portugal"></td>
-          <td><input type="text" value="Selena"></td>
-          <td><button class="remove" onclick="removeRow(this)">X</button></td>
-        </tr>
-        <tr>
-          <td><input type="time" value="16:00"></td>
-          <td>
-            <select>
-              <option value="Pickup">Pickup</option>
-              <option value="Dropoff">Dropoff</option>
-            </select>
-          </td>
-          <td><input type="text" value="R. de Alves Redol 292, 4050-042 Porto, Portugal"></td>
-          <td><input type="text" value="Selena"></td>
-          <td><button class="remove" onclick="removeRow(this)">X</button></td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="actions">
-      <button onclick="addRow()">Add Row + </button>
-      <button class="btn-check" onclick="checkWaiting()">CHECK</button>
+    <div class="card">
+      <div class="card-content">
+        <span class="card-title">Ride Plan</span>
+        <div class="table-container">
+          <table class="striped responsive-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Action</th>
+                <th>Address</th>
+                <th>Passenger</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="rideTable">
+              <!-- Rows injected here -->
+            </tbody>
+          </table>
+        </div>
+        <div class="actions right-align">
+          <a class="btn-floating btn-small waves-effect waves-light blue" onclick="addRow()">
+            <i class="material-icons">add</i>
+          </a>
+          <a class="btn green waves-effect waves-light" onclick="checkWaiting()">
+            <i class="material-icons left">check</i>Check
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-content">
+        <span class="card-title">Driver is Waiting for:</span>
+        <ul class="collection" id="resultList">
+          <!-- Results appear here -->
+        </ul>
+      </div>
     </div>
   </div>
 
-  <div class="result-panel">
-    <h3>Driver Waiting Result</h3>
-    <p>Driver is waiting for:</p>
-    <ul id="resultList"></ul>
-  </div>
-
+  <!-- Materialize JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <script>
     function addRow() {
-      const tbody = document.getElementById('rideTable').querySelector('tbody');
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><input type="time"></td>
+      const tbody = document.getElementById('rideTable');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
         <td>
-          <select>
-            <option value="Pickup">Pickup</option>
-            <option value="Dropoff">Dropoff</option>
-          </select>
+          <div class="input-field">
+            <input type="time" class="validate">
+          </div>
         </td>
-        <td><input type="text"></td>
-        <td><input type="text"></td>
-        <td><button class="remove" onclick="removeRow(this)">X</button></td>
+        <td>
+          <div class="input-field valign-wrapper">
+            <i class="material-icons icon-indicator blue-text" style="margin-right: 8px;">call_made</i>
+            <select class="browser-default action-selector">
+              <option value="Pickup">Pickup</option>
+              <option value="Dropoff">Dropoff</option>
+            </select>
+          </div>
+        </td>
+        <td>
+          <div class="input-field">
+            <input type="text" class="validate" placeholder="Address">
+          </div>
+        </td>
+        <td>
+          <div class="input-field">
+            <input type="text" class="validate" placeholder="Passenger">
+          </div>
+        </td>
+        <td>
+          <a class="btn-floating btn-small waves-effect waves-light red" onclick="removeRow(this)">
+            <i class="material-icons">delete</i>
+          </a>
+        </td>
       `;
-      tbody.appendChild(row);
+      tbody.appendChild(tr);
+
+      // Icon toggle logic
+      const selector = tr.querySelector('.action-selector');
+      const icon = tr.querySelector('.icon-indicator');
+      selector.addEventListener('change', () => {
+        icon.textContent = selector.value === 'Pickup' ? 'call_made' : 'call_received';
+        icon.classList.toggle('green-text', selector.value === 'Dropoff');
+        icon.classList.toggle('blue-text', selector.value === 'Pickup');
+      });
     }
 
-    function removeRow(button) {
-      button.closest('tr').remove();
+    function removeRow(btn) {
+      btn.closest('tr').remove();
     }
 
-    function getDriverWaiting(events, maxWaitHours = 3) {
+    function getDriverWaiting(events, maxWaitHrs = 3) {
       const waitResults = [];
-      const parseTime = (t) => new Date(`1970-01-01T${t}:00`);
-      const dropoffs = events.filter(e => e.action === 'Dropoff');
+      const parseTime = t => new Date(`1970-01-01T${t}:00`);
+      const drops = events.filter(e => e.action === 'Dropoff');
 
-      for (const dropEvent of dropoffs) {
-        const { time, address: dropAddress, passenger: dropPassenger } = dropEvent;
-        const dropTime = parseTime(time);
-        const deadline = new Date(dropTime.getTime() + maxWaitHours * 60 * 60 * 1000);
-
-        const futurePickups = events.filter(e =>
+      drops.forEach(drop => {
+        const dTime = parseTime(drop.time);
+        const deadline = new Date(dTime.getTime() + maxWaitHrs * 60 * 60 * 1000);
+        const upcoming = events.find(e =>
           e.action === 'Pickup' &&
-          parseTime(e.time) > dropTime &&
+          parseTime(e.time) > dTime &&
           parseTime(e.time) <= deadline &&
-          e.passenger === dropPassenger &&
-          e.address === dropAddress
+          e.passenger === drop.passenger &&
+          e.address === drop.address
         );
-
-        if (futurePickups.length === 0) continue;
-
-        const pickupEvent = futurePickups[0];
-        const pickupTime = parseTime(pickupEvent.time);
-
-        const interimMoves = events.filter(e => {
-          const eventTime = parseTime(e.time);
-          return eventTime > dropTime && eventTime < pickupTime && e.address !== dropAddress;
-        });
-
-        if (interimMoves.length === 0) {
-          const waitDurationHrs = (pickupTime - dropTime) / (1000 * 60 * 60);
-          waitResults.push({
-            passenger: dropPassenger,
-            location: dropAddress,
-            waitFrom: dropEvent.time,
-            waitTo: pickupEvent.time,
-            waitHours: waitDurationHrs.toFixed(2)
+        if (upcoming) {
+          const pTime = parseTime(upcoming.time);
+          const interim = events.some(e => {
+            const et = parseTime(e.time);
+            return et > dTime && et < pTime && e.address !== drop.address;
           });
+          if (!interim) {
+            waitResults.push({
+              passenger: drop.passenger,
+              location: drop.address,
+              from: drop.time,
+              to: upcoming.time,
+              hrs: ((pTime - dTime) / 36e5).toFixed(2)
+            });
+          }
         }
-      }
+      });
       return waitResults;
     }
 
     function checkWaiting() {
-      const rows = document.querySelectorAll('#rideTable tbody tr');
-      const ridePlan = [];
+      const rows = [...document.querySelectorAll('#rideTable tr')];
+      const plan = rows.map(r => {
+        const inputs = r.querySelectorAll('input, select');
+        return {
+          time: inputs[0].value,
+          action: inputs[1].value,
+          address: inputs[2].value.trim(),
+          passenger: inputs[3].value.trim()
+        };
+      }).filter(e => e.time && e.action && e.address && e.passenger);
 
-      rows.forEach(row => {
-        const inputs = row.querySelectorAll('input, select');
-        const time = inputs[0].value;
-        const action = inputs[1].value;
-        const address = inputs[2].value.trim();
-        const passenger = inputs[3].value.trim();
-
-        if (time && action && address && passenger) {
-          ridePlan.push({ time, action, address, passenger });
-        }
-      });
-
-      const results = getDriverWaiting(ridePlan);
-      const resultList = document.getElementById('resultList');
-      resultList.innerHTML = '';
-
+      const results = getDriverWaiting(plan);
+      const list = document.getElementById('resultList');
+      list.innerHTML = '';
       results.forEach(r => {
-        const li = document.createElement('li');
-        li.textContent = `${r.passenger} waited at ${r.location} from ${r.waitFrom} to ${r.waitTo} (${r.waitHours} hrs)`;
-        resultList.appendChild(li);
+        const item = document.createElement('li');
+        item.className = 'collection-item';
+        item.innerHTML = `
+          <i class="material-icons left">schedule</i>
+          <span><strong>${r.passenger}</strong> at <em>${r.location}</em> from ${r.from} to ${r.to} (${r.hrs} hrs)</span>
+        `;
+        list.appendChild(item);
       });
     }
-  </script>
 
+    // Add initial example rows
+    ['14:00,Pickup,Rua de Oliveira Monteiro 107,Martin',
+      '14:05,Pickup,Rua de Oliveira Monteiro 200,Selena',
+      '14:35,Dropoff,R. de Alves Redol 292,4050-042 Porto, Portugal,Martin',
+      '14:40,Dropoff,R. de Alves Redol 292,4050-042 Porto, Portugal,Selena',
+      '16:00,Pickup,R. de Alves Redol 292,4050-042 Porto, Portugal,Selena']
+      .forEach(str => {
+        const [time, action, ...rest] = str.split(',');
+        const passenger = rest.pop();
+        const address = rest.join(',');
+        addRow();
+        const last = document.querySelector('#rideTable tr:last-child');
+        last.querySelector('input[type=time]').value = time;
+        last.querySelector('select').value = action;
+        last.querySelectorAll('input[type=text]')[0].value = address;
+        last.querySelectorAll('input[type=text]')[1].value = passenger;
+        last.querySelector('.action-selector').dispatchEvent(new Event('change'));
+      });
+  </script>
 </body>
 
 </html>
